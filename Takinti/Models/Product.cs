@@ -36,7 +36,7 @@ namespace Takinti.Models
         public string Description { get; set; }
         public bool IsInStock { get; set; }
         public int Quantity { get; set; }
-        public int SaleCount { get; set; } //buraya geri dönülecek
+        public int SaleCount { get; } //buraya geri dönülecek
         public string Details { get; set; }
         public string Features { get; set; }
         public string DataSheet { get; set; }

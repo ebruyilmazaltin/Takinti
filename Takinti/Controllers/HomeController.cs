@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Takinti.Models;
 
 namespace Takinti.Controllers
 {
@@ -10,7 +11,14 @@ namespace Takinti.Controllers
     {
         public ActionResult Index()
         {
-            return View();
+            using (var db = new ApplicationDbContext())
+            {
+                var categories = db.Categories.Include("ChildCategories")
+                    .Include("ChildCategories.ChildCategories").Include("Products")
+                    .Where(w => w.ParentCategoryId == null).ToList();  //alt entitylere erişmek için onları dahil etmemiz gerekmektedir
+                ViewBag.Categories = categories; 
+            }
+                return View();
         }
 
         public ActionResult Contact()

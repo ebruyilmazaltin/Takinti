@@ -10,9 +10,7 @@ namespace Takinti.Models
     // You can add profile data for the user by adding more properties to your ApplicationUser class, please visit https://go.microsoft.com/fwlink/?LinkID=317594 to learn more.
     public class ApplicationUser : IdentityUser
     {
-        public int CartId { get; set; }
-        [ForeignKey("CartId")]
-        public virtual Cart Cart { get; set; }
+        
 
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
         {
@@ -28,12 +26,15 @@ namespace Takinti.Models
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)
         {
+            Database.SetInitializer(new MigrateDatabaseToLatestVersion<ApplicationDbContext, 
+                Takinti.Migrations.Configuration>("DefaultConnection")); //migrationların otomatik yapılması için
         }
 
         public DbSet<Category> Categories { get; set; } //DbSet leri kendimiz ekliyoruz
         public DbSet<Product> Products { get; set; }
         public DbSet<Cart> Carts { get; set; }
         public DbSet<CartItem> CartItems { get; set; }
+        public DbSet<Post> Posts { get; set; }
 
 
         public static ApplicationDbContext Create()
