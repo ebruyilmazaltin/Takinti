@@ -203,40 +203,29 @@
                         <a href="#"><i class="zmdi zmdi-close"></i></a>
                     </div>
                     <div class="shp__cart__wrap">
+                        @if (Session["Cart"] != null) { 
+                                    foreach (var cartItem in ((Takinti.Models.Cart)Session["Cart"]).CartItems){
                         <div class="shp__single__product">
                             <div class="shp__pro__thumb">
-                                <a href="#">
-                                    <img src="/images/product/sm-img/1.jpg" alt="product images">
+                                <a href="@Url.Action("Index", "Product", new { slug = cartItem.Product.Slug})">
+                                    <img src="/images/product/@cartItem.Product.Photo" alt="@cartItem.Product.Name">
                                 </a>
                             </div>
                             <div class="shp__pro__details">
-                                <h2><a href="product-details.html">BO&Play Wireless Speaker</a></h2>
-                                <span class="quantity">QTY: 1</span>
-                                <span class="shp__price">$105.00</span>
+                                <h2><a href="@Url.Action("Index", "Product", new { slug = cartItem.Product.Slug})">@cartItem.Product.Name</a></h2>
+                                <span class="quantity">Adet: @cartItem.Quentity</span>
+                                <span class="shp__price">@cartItem.Price ₺</span>
                             </div>
                             <div class="remove__btn">
-                                <a href="#" title="Remove this item"><i class="zmdi zmdi-close"></i></a>
+                                <a href="javascript:void(0);"  onclick="RemoveFromCart('@cartItem.Product.Slug')" title="Remove this item"><i class="zmdi zmdi-close"></i></a>
                             </div>
                         </div>
-                        <div class="shp__single__product">
-                            <div class="shp__pro__thumb">
-                                <a href="#">
-                                    <img src="/images/product/sm-img/2.jpg" alt="product images">
-                                </a>
-                            </div>
-                            <div class="shp__pro__details">
-                                <h2><a href="product-details.html">Brone Candle</a></h2>
-                                <span class="quantity">QTY: 1</span>
-                                <span class="shp__price">$25.00</span>
-                            </div>
-                            <div class="remove__btn">
-                                <a href="#" title="Remove this item"><i class="zmdi zmdi-close"></i></a>
-                            </div>
-                        </div>
+                        }
+                        } 
                     </div>
                     <ul class="shoping__total">
                         <li class="subtotal">Subtotal:</li>
-                        <li class="total__price">$130.00</li>
+                        <li class="total__price">@(Session["Cart"]!= null?((Takinti.Models.Cart)Session["Cart"]).TotalPrice:0)₺</li>
                     </ul>
                     <ul class="shopping__btn">
                         <li><a href="@Url.Action("Cart","Shop")">Sepeti Göster</a></li>
@@ -492,6 +481,15 @@
                     alert("Bir hata oluştu, lütfen tekrar deneyiniz.");
                 }
             });
+        }
+
+        function RemoveFromCart(slug) {
+            $.post("/Shop/RemoveFromCart", { slug: slug }, function (data) {
+                UpdateBadge(data);
+
+            }).fail(function () {
+                alert("Beklenmeyen bir hata oluştu, lütfen tekrar deneyiniz.");
+                });
         }
         function UpdateBadge(data) {
             if ($("#cartBadge").html() != null) {
